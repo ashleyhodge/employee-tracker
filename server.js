@@ -1,11 +1,6 @@
-const express = require('express');
+const inquirer = require('inquirer');
 const mysql = require('mysql2');
-const PORT = process.env.PORT || 3001;
-const app = express();
-
-// Express middleware
-app.use(express.urlencoded({ extended: false }));
-app.use(express.json());
+const consoleTable = require('console.table');
 
 // Connect to database
 const db = mysql.createConnection(
@@ -121,6 +116,64 @@ app.post('/api/role', ({ body }, res) => {
         } 
         res.json({
             message: 'Role successfully created!',
+            data: body
+        });
+    });
+});
+// View all employees 
+app.get('/api/employees', (req, res) => {
+    const sql = `SELECT employees.id, employees.first_name, employees.last_name, roles.title, roles.salary, departments.department_name AS department, CONCAT(manager.first_name, ' ', manager.last_name) AS manager 
+                FROM employees 
+                LEFT JOIN employees manager ON manager.id = employees.manager_id 
+                INNER JOIN roles ON (roles.id = employees.role_id) 
+                INNER JOIN departments ON (departments.id = roles.department_id)
+                ORDER BY employees.id;`;
+
+    db.query(sql, (err, rows) => {
+        if(err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json({
+            message: 'success',
+            data: rows
+        });
+    });
+});
+// Delete an employee
+app.delete('/api/employee/:id', (req, res) => {
+    const sql = `DELETE FROM employees WHERE id = ?`;
+    const params = [req.params.id];
+
+    db.query(sql, params, (err, result) => {
+        if(err) {
+            res.status(400).json({ error: err.message });
+        } else if (!result.affectedRows) {
+            res.json({
+                message: 'Employee not found'
+            });
+        } else {
+            res.json({
+                message: 'Employee has been successfully deleted!',
+                changes: result.affectedRows,
+                id: req.params.id
+            });
+        }
+    });
+});
+// Create an employee
+app.post('/api/employee', ({ body }, res) => {
+    const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+                   VALUES(?,?,?,?)`;
+    const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
+
+    db.query(sql, params, (err, result) => {
+        if(err) {
+            res.status(400).json({ error: err.message });
+            return;
+        } 
+        res.json({
+            message: 'Employee successfully created!',
             data: body
         });
     });

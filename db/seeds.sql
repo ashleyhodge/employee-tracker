@@ -30,5 +30,32 @@ VALUES
     ('Accounting manager', '80033.00', 6),
     ('Project accountant', '62160.00', 6),
     ('Chief Finacial Officer', '132910.00', 6),
-    ('Finacial analyst', '68445.00', 6);
+    ('Finacial analyst', '68445.00', 6),
+    ('Chief Executive Officer', '195000.00', 1);
+
+INSERT INTO employees (first_name, last_name, role_id, manager_id)
+VALUES
+    ('Amanda', 'Howell', 1, 3),
+    ('Kenneth', 'Donovan', 2, 3),
+    ('Samantha', 'Smith', 3, 23),
+    ('Seth', 'Kim', 4, 5),
+    ('Gordan', 'Ryan', 5, 23),
+    ('Sabrina', 'Taylor', 6, 5),
+    ('Margret', 'Murphy', 7, 9),
+    ('Jessica', 'Miller', 8, 9),
+    ('Kimberly', 'Wheeler', 9, 23),
+    ('Rebekah', 'Gonzalez', 10, 9),
+    ('Michael', 'Reynolds', 11, 23),
+    ('Alexander', 'Johnson', 12, 14),
+    ('Jocelyn', 'Gregory', 13, 14),
+    ('Connor', 'Mullen', 14, 23),
+    ('Sarah', 'Hayes', 15, 17),
+    ('Joshua', 'Pham', 16, 17),
+    ('Gregery', 'Moore', 17, 23),
+    ('James', 'Nolan', 18, 21),
+    ('Kevin', 'Cameron', 19, 21),
+    ('Rick', 'Santos', 20, 21),
+    ('Brian', 'Reyes', 21, 23),
+    ('Robin', 'Mercer', 22, 21),
+    ('Michael', 'Rice', 23, NULL);
 
