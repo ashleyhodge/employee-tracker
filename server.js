@@ -18,28 +18,74 @@ const db = mysql.createConnection(
     console.log('Connected to the business database.')
 );
 
-app.get('/', (req, res) => {
+app.get('/api/departments', (req, res) => {
+    const sql = `SELECT * FROM departments`;
 
-    // Create a department
-    const sql = `INSERT INTO departments (id, department_name)
-                  VALUES(?,?)`;
-    const params = [1, 'Administration/Operations'];
+    db.query(sql, (err, rows) => {
+        if(err) {
+            res.status(500).json({ error: err.message });
+            return;
+        }
+        res.json({
+            message: 'success',
+            data: rows
+        });
+    });
+});
+
+app.delete('/api/department/:id', (req, res) => {
+    const sql = `DELETE FROM departments WHERE id = ?`;
+    const params = [req.params.id];
 
     db.query(sql, params, (err, result) => {
         if(err) {
-            console.log(err);
+            res.statusMessage(400).json({ error: err.message });
+        } else if (!result.affectedRows) {
+            res.json({
+                message: 'Department not found'
+            });
+        } else {
+            res.json({
+                mesage: 'Department has been successfully deleted!',
+                changes: result.affectedRows,
+                id: req.params.id
+            });
         }
-        console.log(result);
     });
-    // db.query(`DELETE FROM departments WHERE id = ?`, 1, (err, result) => {
+});
+
+//Create a department
+app.post('/api/department', ({ body }, res) => {
+    const sql = `INSERT INTO departments (department_name)
+                   VALUES(?)`;
+    const params = [body.department_name];
+
+    db.query(sql, params, (err, result) => {
+        if(err) {
+            res.status(400).json({ error: err.message });
+            return;
+        } 
+        res.json({
+            message: 'Department successfully created!',
+            data: body
+        });
+    });
+});
+
+app.get('/', (req, res) => {
+
+    // Create a department
+    // const sql = `INSERT INTO departments (id, department_name)
+    //               VALUES(?,?)`;
+    // const params = [1, 'Administration/Operations'];
+
+    // db.query(sql, params, (err, result) => {
     //     if(err) {
     //         console.log(err);
     //     }
     //     console.log(result);
     // });
-    // db.query(`SELECT * FROM departments`, (err, rows) => {
-    //     console.log(rows);
-    // })
+
     res.json({
         message: 'Hello World'
     });
