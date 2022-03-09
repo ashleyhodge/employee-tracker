@@ -1,0 +1,27 @@
+{
+  "name": "employee-tracker",
+  "version": "1.0.0",
+  "description": "## Description ---- This application will help an employer manage and view all the departments, roles, and employees in the business. Using command-line prompts, the user will be able to view tables for all departments, roles, and employees. They will be able to add a department, role, and employee. And they will be able to update an existing employees role in the company.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ashleyhodge/employee-tracker.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ashleyhodge/employee-tracker/issues"
+  },
+  "homepage": "https://github.com/ashleyhodge/employee-tracker#readme",
+  "dependencies": {
+    "console.table": "^0.10.0",
+    "express": "^4.17.3",
+    "inquirer": "^8.2.0",
+    "mysql2": "^2.3.3"
+  }
+}
