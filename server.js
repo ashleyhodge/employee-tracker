@@ -72,25 +72,6 @@ app.post('/api/department', ({ body }, res) => {
     });
 });
 
-app.get('/', (req, res) => {
-
-    // Create a department
-    // const sql = `INSERT INTO departments (id, department_name)
-    //               VALUES(?,?)`;
-    // const params = [1, 'Administration/Operations'];
-
-    // db.query(sql, params, (err, result) => {
-    //     if(err) {
-    //         console.log(err);
-    //     }
-    //     console.log(result);
-    // });
-
-    res.json({
-        message: 'Hello World'
-    });
-});
-
 // Default response for any other request (Not Found)
 app.use((req, res) => {
     res.status(404).end();
