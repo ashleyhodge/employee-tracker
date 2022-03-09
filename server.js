@@ -20,13 +20,31 @@ const db = mysql.createConnection(
 
 app.get('/', (req, res) => {
 
-    db.query(`SELECT * FROM departments`, (err, rows) => {
-        console.log(rows);
-    })
+    // Create a department
+    const sql = `INSERT INTO departments (id, department_name)
+                  VALUES(?,?)`;
+    const params = [1, 'Administration/Operations'];
+
+    db.query(sql, params, (err, result) => {
+        if(err) {
+            console.log(err);
+        }
+        console.log(result);
+    });
+    // db.query(`DELETE FROM departments WHERE id = ?`, 1, (err, result) => {
+    //     if(err) {
+    //         console.log(err);
+    //     }
+    //     console.log(result);
+    // });
+    // db.query(`SELECT * FROM departments`, (err, rows) => {
+    //     console.log(rows);
+    // })
     res.json({
         message: 'Hello World'
     });
 });
+
 // Default response for any other request (Not Found)
 app.use((req, res) => {
     res.status(404).end();
