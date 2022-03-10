@@ -2,7 +2,7 @@
   "name": "employee-tracker",
   "version": "1.0.0",
   "description": "## Description ---- This application will help an employer manage and view all the departments, roles, and employees in the business. Using command-line prompts, the user will be able to view tables for all departments, roles, and employees. They will be able to add a department, role, and employee. And they will be able to update an existing employees role in the company.",
-  "main": "index.js",
+  "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js"
