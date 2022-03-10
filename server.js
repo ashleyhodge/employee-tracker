@@ -30,7 +30,7 @@ function start() {
             'Delete a department',
             'Delete a role',
             'Delete an employee',
-            'Update an existing employees role',
+            "Update an existing employee's role",
             'Exit application'
             ]
         }
@@ -58,6 +58,10 @@ function start() {
 
             case 'Add an employee':
                 addEmployee();
+            break;
+
+            case "Update an existing employee's role":
+                updateEmployee();
             break;
         }
     })
@@ -226,7 +230,60 @@ function addEmployee() {
         })
     })
 }
-    
+function updateEmployee() {
+    const empSql = `SELECT * FROM employees`;
+
+    db.query(empSql, (err, res) => {
+        if(err) throw err;
+
+        const employees = res.map(({ id, first_name, last_name }) => ({ name: first_name + ' ' + last_name, value: id }));
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                message: 'choose existing employee to update:',
+                name: 'employee',
+                choices: employees
+            }
+        ]).then(empAnswer => {
+            const employee = empAnswer.employee;
+            const params = [];
+            params.push(employee);
+
+            const roleSql = `SELECT * FROM roles`;
+
+            db.query(roleSql, (err, res) => {
+                if(err) throw err;
+
+                const roles = res.map(({ id, title }) => ({ name: title, value: id }));
+
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        message: 'Choose the new role for this employee:',
+                        name: 'role',
+                        choices: roles
+                    }
+                ]). then(roleAnswer => {
+                    const role = roleAnswer.role;
+                    params.push(role);
+
+                    let employee = params[0]
+                    params[0] = role
+                    params[1] = employee
+
+                    const sql = `UPDATE employees SET role_id = ? WHERE id = ?`;
+
+                    db.query(sql, params, (err, res) => {
+                        if(err) throw err;
+
+                        viewAllEmployees();
+                    })
+                })
+            })
+        })
+    })
+}
     
     
     
@@ -302,29 +359,4 @@ function addEmployee() {
 //             });
 //         }
 //     });
-// });
-// // Create an employee
-// app.post('/api/employee', ({ body }, res) => {
-//     const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)
-//                    VALUES(?,?,?,?)`;
-//     const params = [body.first_name, body.last_name, body.role_id, body.manager_id];
-
-//     db.query(sql, params, (err, result) => {
-//         if(err) {
-//             res.status(400).json({ error: err.message });
-//             return;
-//         } 
-//         res.json({
-//             message: 'Employee successfully created!',
-//             data: body
-//         });
-//     });
-// });
-// // Default response for any other request (Not Found)
-// app.use((req, res) => {
-//     res.status(404).end();
-// });
-
-// app.listen(PORT, () => {
-//     console.log(`Server is running @ http://localhost:${PORT}`);
 // });
