@@ -382,24 +382,3 @@ function deleteEmployee() {
     })
 }
 
-// // Delete an employee
-// app.delete('/api/employee/:id', (req, res) => {
-//     const sql = ;
-//     const params = [req.params.id];
-
-//     db.query(sql, params, (err, result) => {
-//         if(err) {
-//             res.status(400).json({ error: err.message });
-//         } else if (!result.affectedRows) {
-//             res.json({
-//                 message: 'Employee not found'
-//             });
-//         } else {
-//             res.json({
-//                 message: 'Employee has been successfully deleted!',
-//                 changes: result.affectedRows,
-//                 id: req.params.id
-//             });
-//         }
-//     });
-// });
