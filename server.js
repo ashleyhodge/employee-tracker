@@ -2,6 +2,7 @@ const inquirer = require('inquirer');
 const mysql = require('mysql2');
 const cTable = require('console.table');
 
+
 // Connect to database
 const db = mysql.createConnection(
     {
@@ -30,8 +31,7 @@ function start() {
             'Delete a department',
             'Delete a role',
             'Delete an employee',
-            "Update an existing employee's role",
-            'Exit application'
+            "Update an existing employee's role"          
             ]
         }
     ]).then(function(value) {
@@ -63,6 +63,18 @@ function start() {
             case "Update an existing employee's role":
                 updateEmployee();
             break;
+
+            case 'Delete a department':
+                deleteDepartment();
+            break;
+
+            case 'Delete a role':
+                deleteRole();
+            break;
+
+            case 'Delete an employee':
+                deleteEmployee();
+            break;
         }
     })
 }
@@ -80,7 +92,8 @@ function veiwAllDepartments() {
 function viewAllRoles() {
     const sql = `SELECT roles.id, roles.title, roles.salary, departments.department_name AS department_name 
                 FROM roles 
-                INNER JOIN departments ON roles.department_id = departments.id;`;
+                INNER JOIN departments ON roles.department_id = departments.id
+                ORDER BY id`;
 
     db.query(sql, (err, res) => {
         if(err) throw err
@@ -230,6 +243,7 @@ function addEmployee() {
         })
     })
 }
+// Update an existing employee
 function updateEmployee() {
     const empSql = `SELECT * FROM employees`;
 
@@ -241,7 +255,7 @@ function updateEmployee() {
         inquirer.prompt([
             {
                 type: 'list',
-                message: 'choose existing employee to update:',
+                message: 'Choose existing employee to update:',
                 name: 'employee',
                 choices: employees
             }
@@ -284,64 +298,93 @@ function updateEmployee() {
         })
     })
 }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
 // Delete a department
-// app.delete('/api/department/:id', (req, res) => {
-//     const sql = `DELETE FROM departments WHERE id = ?`;
-//     const params = [req.params.id];
+function deleteDepartment() {
+    const deptSql = `SELECT * FROM departments`;
 
-//     db.query(sql, params, (err, result) => {
-//         if(err) {
-//             res.statusMessage(400).json({ error: err.message });
-//         } else if (!result.affectedRows) {
-//             res.json({
-//                 message: 'Department not found'
-//             });
-//         } else {
-//             res.json({
-//                 mesage: 'Department has been successfully deleted!',
-//                 changes: result.affectedRows,
-//                 id: req.params.id
-//             });
-//         }
-//     });
-// });
+    db.query(deptSql, (err, res) => {
+        if(err) throw err;
 
-// app.delete('/api/role/:id', (req, res) => {
-//     const sql = `DELETE FROM roles WHERE id = ?`;
-//     const params = [req.params.id];
+        const departments = res.map(({ id, department_name}) => ({ name: department_name, value: id }));
 
-//     db.query(sql, params, (err, result) => {
-//         if(err) {
-//             res.status(400).json({ error: err.message });
-//         } else if (!result.affectedRows) {
-//             res.json({
-//                 message: 'Role not found'
-//             });
-//         } else {
-//             res.json({
-//                 message: 'Role has been successfully deleted!',
-//                 changes: result.affectedRows,
-//                 id: req.params.id
-//             });
-//         }
-//     });
-// });
+        inquirer.prompt([
+            {
+                type: 'list',
+                message: 'Choose a department to delete:',
+                name: 'department',
+                choices: departments
+            }
+        ]).then(deptAnswer => {
+            const department = deptAnswer.department;
+            const sql = `DELETE FROM departments WHERE id = ?`;
+
+            db.query(sql,  department, (err, res) => {
+                if(err) throw err;
+
+                veiwAllDepartments();
+            })
+        }) 
+    })
+}
+// Delete a role
+function deleteRole() {
+    const roleSql = `SELECT * FROM roles`;
+
+    db.query(roleSql, (err, res) => {
+        if(err) throw err;
+
+        const roles = res.map(({ id, title }) => ({ name: title, value: id }));
+
+        inquirer.prompt([
+            { 
+                type: 'list',
+                message: 'Choose a role to delete:',
+                name: 'role',
+                choices: roles
+            }
+        ]).then(roleAnswer => {
+            const role = roleAnswer.role;
+            const sql = `DELETE FROM roles WHERE id = ?`;
+
+            db.query(sql, role, (err, res) => {
+                if(err) throw err;
+
+                viewAllRoles();
+            })
+        })
+    })
+}    
+function deleteEmployee() {
+    const empSql = `SELECT * FROM employees`;
+
+    db.query(empSql, (err, res) => {
+        if(err) throw err;
+
+        const employees = res.map(({ id, first_name, last_name }) => ({ name: first_name + ' ' + last_name, value: id }));
+
+        inquirer.prompt([
+            {
+                type: 'list',
+                message: 'Chose an amployee to delete:',
+                name: 'employee',
+                choices: employees
+            }
+        ]).then(empAnswer => {
+            const employee = empAnswer.employee;
+            const sql = `DELETE FROM employees WHERE id = ?`;
+
+            db.query(sql, employee, (err, res) => {
+                if(err) throw err;
+
+                viewAllEmployees();
+            })
+        })
+    })
+}
 
 // // Delete an employee
 // app.delete('/api/employee/:id', (req, res) => {
-//     const sql = `DELETE FROM employees WHERE id = ?`;
+//     const sql = ;
 //     const params = [req.params.id];
 
 //     db.query(sql, params, (err, result) => {
