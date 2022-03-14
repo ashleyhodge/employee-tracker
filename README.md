@@ -41,3 +41,4 @@ GIVEN a command-line application that accepts user input
 
 ## Walkthrough Video
 ----
+<img src= "Employee tracker.gif" >
